@@ -125,8 +125,8 @@ public class Main {
         globalEventHandler.addListener(PlayerBlockPlaceEvent.class, (event) -> event.setCancelled(true));
 
         // Registering commands
-        commandManager.register(new TeleportCommand());
-        commandManager.register(new GameModeCommand());
+        //commandManager.register(new TeleportCommand());
+        //commandManager.register(new GameModeCommand());
 
         // Adding MinestomPVP
         PvpExtension.init();
