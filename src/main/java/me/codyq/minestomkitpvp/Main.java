@@ -9,6 +9,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.command.CommandManager;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerBlockBreakEvent;
@@ -83,7 +84,7 @@ public class Main {
         benchmarkManager.enable(Duration.ofMillis(Long.MAX_VALUE));
 
         AtomicReference<TickMonitor> lastTick = new AtomicReference<>();
-        MinecraftServer.getGlobalEventHandler().addListener(ServerTickMonitorEvent.class, event -> lastTick.set(event.getTickMonitor()));
+        globalEventHandler.addListener(ServerTickMonitorEvent.class, event -> lastTick.set(event.getTickMonitor()));
 
         MinecraftServer.getSchedulerManager().buildTask(() -> {
             Collection<Player> players = MinecraftServer.getConnectionManager().getOnlinePlayers();
@@ -94,16 +95,22 @@ public class Main {
             ramUsage /= 1e6; // bytes to MB
 
             TickMonitor tickMonitor = lastTick.get();
-            final Component header = Component.text("RAM USAGE: " + ramUsage + " MB")
-                    .append(Component.newline())
-                    .append(Component.text("TICK TIME: " + MathUtils.round(tickMonitor.getTickTime(), 2) + "ms"));
-            final Component footer = benchmarkManager.getCpuMonitoringMessage();
+
+            final Component header = Component.text("Minestom demo")
+                    .append(Component.newline()).append(Component.newline())
+                    .append(Component.text("RAM USAGE: " + ramUsage + " MB").append(Component.newline())
+                            .append(Component.text("TICK TIME: " + MathUtils.round(tickMonitor.getTickTime(), 2) + "ms")));
+
+            final Component footer = Component.text("Project: minestom.net").append(Component.newline()).append(Component.text("Source: github.com/Minestom/Minestom"))
+                    .append(Component.newline()).append(Component.newline())
+                    .append(benchmarkManager.getCpuMonitoringMessage());
             Audiences.players().sendPlayerListHeaderAndFooter(header, footer);
         }).repeat(40, TimeUnit.SERVER_TICK).schedule();
 
         // Pogchamps
         globalEventHandler.addListener(PlayerLoginEvent.class, (event) -> {
             final Player player = event.getPlayer();
+            player.setGameMode(GameMode.ADVENTURE);
             event.setSpawningInstance(instanceContainer);
             player.setRespawnPoint(spawnLocations.get(random.nextInt(spawnLocations.size())));
             KitUtils.applyKit(player);
@@ -131,15 +138,10 @@ public class Main {
         OptifineSupport.enable();
 
         // Starting the server
-        final String address = System.getenv("ADDRESS");
-        final int port = Integer.parseInt(System.getenv("PORT"));
-        final boolean enableMojangAuth = Boolean.parseBoolean(System.getenv("MOJANG_AUTH"));
+        final String host = System.getProperty("host", "0.0.0.0");
+        final int port = Integer.getInteger("port", 25565);
+        if (Boolean.getBoolean("auth")) MojangAuth.init();
 
-        if (enableMojangAuth) {
-            MojangAuth.init();
-        }
-
-        minecraftServer.start(address, port);
+        minecraftServer.start(host, port);
     }
-
 }
