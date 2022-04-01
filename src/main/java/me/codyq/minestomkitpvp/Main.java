@@ -7,6 +7,8 @@ import me.codyq.minestomkitpvp.commands.ProjectCommand;
 import me.codyq.minestomkitpvp.commands.TeleportCommand;
 import me.codyq.minestomkitpvp.utils.KitUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.command.CommandManager;
@@ -19,6 +21,7 @@ import net.minestom.server.event.player.PlayerBlockBreakEvent;
 import net.minestom.server.event.player.PlayerBlockPlaceEvent;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.event.player.PlayerRespawnEvent;
+import net.minestom.server.event.server.ServerListPingEvent;
 import net.minestom.server.event.server.ServerTickMonitorEvent;
 import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.optifine.OptifineSupport;
@@ -26,8 +29,10 @@ import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
 import net.minestom.server.monitoring.BenchmarkManager;
 import net.minestom.server.monitoring.TickMonitor;
+import net.minestom.server.ping.ResponseData;
 import net.minestom.server.utils.MathUtils;
 import net.minestom.server.utils.NamespaceID;
+import net.minestom.server.utils.identity.NamedAndIdentified;
 import net.minestom.server.utils.time.TimeUnit;
 import net.minestom.server.world.DimensionType;
 import net.minestom.server.world.DimensionTypeManager;
@@ -127,6 +132,11 @@ public class Main {
             final Player player = event.getPlayer();
             player.setRespawnPoint(spawnLocations.get(random.nextInt(spawnLocations.size())));
             KitUtils.applyKit(player);
+        });
+
+        globalEventHandler.addListener(ServerListPingEvent.class, (event) -> {
+            ResponseData responseData = event.getResponseData();
+            responseData.setDescription(Component.text("Minestom KitPVP Testing Server", NamedTextColor.GREEN).decorate(TextDecoration.BOLD));
         });
 
         globalEventHandler.addListener(PlayerBlockBreakEvent.class, (event) -> event.setCancelled(true));
