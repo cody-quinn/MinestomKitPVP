@@ -23,7 +23,6 @@ import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
 import net.minestom.server.monitoring.BenchmarkManager;
 import net.minestom.server.monitoring.TickMonitor;
-import net.minestom.server.timer.SchedulerManager;
 import net.minestom.server.utils.MathUtils;
 import net.minestom.server.utils.NamespaceID;
 import net.minestom.server.utils.time.TimeUnit;
@@ -54,10 +53,9 @@ public class Main {
         CommandManager commandManager = MinecraftServer.getCommandManager();
         GlobalEventHandler globalEventHandler = MinecraftServer.getGlobalEventHandler();
 
-        SchedulerManager schedulerManager = MinecraftServer.getSchedulerManager();
-
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();
         InstanceContainer instanceContainer = instanceManager.createInstanceContainer(fullBrightDimension);
+        instanceContainer.getWorldBorder().setDiameter(10_000);
 
         try {
             Scanner scanner = new Scanner(new File("spawns.csv"));
@@ -97,6 +95,7 @@ public class Main {
             TickMonitor tickMonitor = lastTick.get();
 
             final Component header = Component.text("Minestom demo")
+                    .append(Component.newline()).append(Component.text("Players: " + players.size()))
                     .append(Component.newline()).append(Component.newline())
                     .append(Component.text("RAM USAGE: " + ramUsage + " MB").append(Component.newline())
                             .append(Component.text("TICK TIME: " + MathUtils.round(tickMonitor.getTickTime(), 2) + "ms")));
@@ -105,7 +104,7 @@ public class Main {
                     .append(Component.newline()).append(Component.newline())
                     .append(benchmarkManager.getCpuMonitoringMessage());
             Audiences.players().sendPlayerListHeaderAndFooter(header, footer);
-        }).repeat(40, TimeUnit.SERVER_TICK).schedule();
+        }).repeat(10, TimeUnit.SERVER_TICK).schedule();
 
         // Pogchamps
         globalEventHandler.addListener(PlayerLoginEvent.class, (event) -> {

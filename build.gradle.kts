@@ -12,8 +12,8 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.Minestom:Minestom:4e6c92e2")
-    implementation("com.github.Bloepiloepi:MinestomPvP:5a55c39187")
+    implementation("com.github.Minestom:Minestom:3674fcc97d")
+    implementation("com.github.Bloepiloepi:MinestomPvP:144a4ca1c2")
 }
 
 tasks.getByName<Test>("test") {
