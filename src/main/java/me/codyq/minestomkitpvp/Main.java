@@ -98,7 +98,8 @@ public class Main {
                     .append(Component.newline()).append(Component.text("Players: " + players.size()))
                     .append(Component.newline()).append(Component.newline())
                     .append(Component.text("RAM USAGE: " + ramUsage + " MB").append(Component.newline())
-                            .append(Component.text("TICK TIME: " + MathUtils.round(tickMonitor.getTickTime(), 2) + "ms")));
+                            .append(Component.text("TICK TIME: " + MathUtils.round(tickMonitor.getTickTime(), 2) + "ms"))).append(Component.newline())
+                    .append(Component.text("(<50 ms tick time is 20 TPS)")).append(Component.newline());
 
             final Component footer = Component.text("Project: minestom.net").append(Component.newline()).append(Component.text("Source: github.com/Minestom/Minestom"))
                     .append(Component.newline()).append(Component.newline())
