@@ -6,9 +6,7 @@ import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
 
-public class KitUtils {
-
-
+public final class KitUtils {
     private static final ItemStack HELMET_ITEM = ItemStack.of(Material.IRON_HELMET);
     private static final ItemStack CHESTPLATE_ITEM = ItemStack.of(Material.IRON_CHESTPLATE);
     private static final ItemStack LEGGINGS_ITEM = ItemStack.of(Material.IRON_LEGGINGS);
