@@ -100,11 +100,12 @@ public class Main {
                     .append(Component.newline()).append(Component.text("Players: " + players.size()))
                     .append(Component.newline()).append(Component.newline())
                     .append(Component.text("RAM USAGE: " + ramUsage + " MB").append(Component.newline())
-                            .append(Component.text("TICK TIME: " + MathUtils.round(tickMonitor.getTickTime(), 2) + "ms")));
+                            .append(Component.text("TICK TIME: " + MathUtils.round(tickMonitor.getTickTime(), 2) + "ms"))).append(Component.newline())
+                    .append(Component.text("less than 50 ms tick time is 20 TPS")).append(Component.newline());
 
-            final Component footer = Component.text("Project: minestom.net").append(Component.newline()).append(Component.text("Source: github.com/Minestom/Minestom"))
+            final Component footer = Component.newline().append(Component.text("Project: minestom.net").append(Component.newline()).append(Component.text("Source: github.com/Minestom/Minestom"))
                     .append(Component.newline()).append(Component.newline())
-                    .append(benchmarkManager.getCpuMonitoringMessage());
+                    .append(benchmarkManager.getCpuMonitoringMessage()));
             Audiences.players().sendPlayerListHeaderAndFooter(header, footer);
         }).repeat(10, TimeUnit.SERVER_TICK).schedule();
 
@@ -127,12 +128,10 @@ public class Main {
         globalEventHandler.addListener(PlayerBlockPlaceEvent.class, (event) -> event.setCancelled(true));
 
         // Registering commands
-        commandManager.register(new TeleportCommand());
-        commandManager.register(new GameModeCommand());
-        commandManager.register(new ClearCommand());
+        //commandManager.register(new TeleportCommand());
+        //commandManager.register(new GameModeCommand());
+        //commandManager.register(new ClearCommand());
         commandManager.register(new ProjectCommand());
-
-        ChatFilter.init();
 
         // Adding MinestomPVP
         PvpExtension.init();
