@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public class ProjectCommand extends Command {
 
     public ProjectCommand() {
-        super("project");
+        super("project", "about", "icanhasminestom", "info", "whatisthis", "this");
         setDefaultExecutor(Project.MINESTOM.executor);
 
         ArgumentEnum<Project> projectArgument = ArgumentType.Enum("project", Project.class);
