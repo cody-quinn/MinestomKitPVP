@@ -5,11 +5,13 @@ import net.minestom.server.event.player.PlayerChatEvent;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ChatFilter {
 
-    private static String bannedWordsRaw = """
+    private static final String BANNED_WORDS_RAW = """
             4r5e
             5h1t
             5hit
@@ -375,14 +377,15 @@ public class ChatFilter {
             xrated
             xxx""";
 
-    private static List<String> bannedWords = Arrays.stream(bannedWordsRaw.split("\n")).map(String::trim).toList();
+    private static final Set<String> BANNED_WORDS = Arrays.stream(BANNED_WORDS_RAW.split("\n")).map(String::trim).collect(Collectors.toUnmodifiableSet());;
 
     public static void init() {
-        MinecraftServer.getGlobalEventHandler().addListener(PlayerChatEvent.class, (event) -> {
-            final String message = event.getMessage();
-            for (String word : bannedWords) {
+        MinecraftServer.getGlobalEventHandler().addListener(PlayerChatEvent.class, event -> {
+            final String message = event.getMessage().toLowerCase(Locale.ROOT);
+            for (String word : BANNED_WORDS) {
                 if (message.contains(word)) {
                     event.setCancelled(true);
+                    return;
                 }
             }
         });

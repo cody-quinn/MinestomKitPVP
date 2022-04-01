@@ -49,5 +49,4 @@ public class TeleportCommand extends Command {
         player.teleport(position);
         player.sendMessage(Component.text("You have been teleported to " + position));
     }
-
 }

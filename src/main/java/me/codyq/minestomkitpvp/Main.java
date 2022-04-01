@@ -57,7 +57,6 @@ public class Main {
 
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();
         InstanceContainer instanceContainer = instanceManager.createInstanceContainer(fullBrightDimension);
-        instanceContainer.setChunkGenerator(new FlatGenerator());
 
         try {
             Scanner scanner = new Scanner(new File("spawns.csv"));

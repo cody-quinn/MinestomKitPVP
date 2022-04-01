@@ -27,5 +27,4 @@ public class GameModeCommand extends Command {
         final Player player = (Player) commandSender;
         player.setGameMode(commandContext.get("gamemode"));
     }
-
 }
