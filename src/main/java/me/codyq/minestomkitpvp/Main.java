@@ -61,6 +61,8 @@ public class Main {
         commandManager.register(new TeleportCommand());
         commandManager.register(new GameModeCommand());
 
+        ChatFilter.init();
+
         // Adding MinestomPVP
         PvpExtension.init();
         globalEventHandler.addChild(PvpExtension.events());
