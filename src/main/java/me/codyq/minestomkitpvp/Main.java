@@ -4,7 +4,9 @@ import io.github.bloepiloepi.pvp.PvpExtension;
 import me.codyq.minestomkitpvp.commands.GameModeCommand;
 import me.codyq.minestomkitpvp.commands.TeleportCommand;
 import me.codyq.minestomkitpvp.utils.KitUtils;
+import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.command.CommandManager;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
@@ -13,20 +15,25 @@ import net.minestom.server.event.player.PlayerBlockBreakEvent;
 import net.minestom.server.event.player.PlayerBlockPlaceEvent;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.event.player.PlayerRespawnEvent;
+import net.minestom.server.event.server.ServerTickMonitorEvent;
 import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.optifine.OptifineSupport;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
+import net.minestom.server.monitoring.BenchmarkManager;
+import net.minestom.server.monitoring.TickMonitor;
+import net.minestom.server.timer.SchedulerManager;
+import net.minestom.server.utils.MathUtils;
 import net.minestom.server.utils.NamespaceID;
+import net.minestom.server.utils.time.TimeUnit;
 import net.minestom.server.world.DimensionType;
 import net.minestom.server.world.DimensionTypeManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.time.Duration;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Main {
 
@@ -45,6 +52,8 @@ public class Main {
 
         CommandManager commandManager = MinecraftServer.getCommandManager();
         GlobalEventHandler globalEventHandler = MinecraftServer.getGlobalEventHandler();
+
+        SchedulerManager schedulerManager = MinecraftServer.getSchedulerManager();
 
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();
         InstanceContainer instanceContainer = instanceManager.createInstanceContainer(fullBrightDimension);
@@ -70,6 +79,30 @@ public class Main {
 
         final Random random = new Random();
 
+        // Starting the benchmark task to run every 40 ticks
+        BenchmarkManager benchmarkManager = MinecraftServer.getBenchmarkManager();
+        benchmarkManager.enable(Duration.ofMillis(Long.MAX_VALUE));
+
+        AtomicReference<TickMonitor> lastTick = new AtomicReference<>();
+        MinecraftServer.getGlobalEventHandler().addListener(ServerTickMonitorEvent.class, event -> lastTick.set(event.getTickMonitor()));
+
+        MinecraftServer.getSchedulerManager().buildTask(() -> {
+            Collection<Player> players = MinecraftServer.getConnectionManager().getOnlinePlayers();
+            if (players.isEmpty())
+                return;
+
+            long ramUsage = benchmarkManager.getUsedMemory();
+            ramUsage /= 1e6; // bytes to MB
+
+            TickMonitor tickMonitor = lastTick.get();
+            final Component header = Component.text("RAM USAGE: " + ramUsage + " MB")
+                    .append(Component.newline())
+                    .append(Component.text("TICK TIME: " + MathUtils.round(tickMonitor.getTickTime(), 2) + "ms"));
+            final Component footer = benchmarkManager.getCpuMonitoringMessage();
+            Audiences.players().sendPlayerListHeaderAndFooter(header, footer);
+        }).repeat(40, TimeUnit.SERVER_TICK).schedule();
+
+        // Pogchamps
         globalEventHandler.addListener(PlayerLoginEvent.class, (event) -> {
             final Player player = event.getPlayer();
             event.setSpawningInstance(instanceContainer);
