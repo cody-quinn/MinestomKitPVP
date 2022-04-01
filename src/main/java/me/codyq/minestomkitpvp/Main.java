@@ -1,6 +1,7 @@
 package me.codyq.minestomkitpvp;
 
 import io.github.bloepiloepi.pvp.PvpExtension;
+import me.codyq.minestomkitpvp.commands.ClearCommand;
 import me.codyq.minestomkitpvp.commands.GameModeCommand;
 import me.codyq.minestomkitpvp.commands.TeleportCommand;
 import me.codyq.minestomkitpvp.utils.KitUtils;
@@ -127,6 +128,7 @@ public class Main {
         // Registering commands
         commandManager.register(new TeleportCommand());
         commandManager.register(new GameModeCommand());
+        commandManager.register(new ClearCommand());
 
         ChatFilter.init();
 
