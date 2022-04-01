@@ -4,9 +4,9 @@ import io.github.bloepiloepi.pvp.PvpExtension;
 import me.codyq.minestomkitpvp.commands.GameModeCommand;
 import me.codyq.minestomkitpvp.commands.TeleportCommand;
 import me.codyq.minestomkitpvp.utils.KitUtils;
-import me.codyq.minestomkitpvp.utils.PositionUtils;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandManager;
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerBlockBreakEvent;
@@ -21,7 +21,16 @@ import net.minestom.server.utils.NamespaceID;
 import net.minestom.server.world.DimensionType;
 import net.minestom.server.world.DimensionTypeManager;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+
 public class Main {
+
+    private static final List<Pos> spawnLocations = new ArrayList<>();
 
     private static final DimensionType fullBrightDimension = DimensionType
             .builder(NamespaceID.from("minestom:fullbright"))
@@ -41,16 +50,36 @@ public class Main {
         InstanceContainer instanceContainer = instanceManager.createInstanceContainer(fullBrightDimension);
         instanceContainer.setChunkGenerator(new FlatGenerator());
 
+        try {
+            Scanner scanner = new Scanner(new File("spawns.csv"));
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] elements = line.split(",");
+                if (elements.length >= 3) {
+                    float x = Float.parseFloat(elements[0]);
+                    float y = Float.parseFloat(elements[1]);
+                    float z = Float.parseFloat(elements[2]);
+                    spawnLocations.add(new Pos(x, y, z));
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Failed loading spawns");
+            e.printStackTrace();
+            return;
+        }
+
+        final Random random = new Random();
+
         globalEventHandler.addListener(PlayerLoginEvent.class, (event) -> {
             final Player player = event.getPlayer();
             event.setSpawningInstance(instanceContainer);
-            player.setRespawnPoint(PositionUtils.getRandomPos(instanceContainer));
+            player.setRespawnPoint(spawnLocations.get(random.nextInt(spawnLocations.size())));
             KitUtils.applyKit(player);
         });
 
         globalEventHandler.addListener(PlayerRespawnEvent.class, (event) -> {
             final Player player = event.getPlayer();
-            player.setRespawnPoint(PositionUtils.getRandomPos(instanceContainer));
+            player.setRespawnPoint(spawnLocations.get(random.nextInt(spawnLocations.size())));
             KitUtils.applyKit(player);
         });
 
