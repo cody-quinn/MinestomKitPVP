@@ -14,6 +14,7 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
+import net.minestom.server.event.item.ItemDropEvent;
 import net.minestom.server.event.player.PlayerBlockBreakEvent;
 import net.minestom.server.event.player.PlayerBlockPlaceEvent;
 import net.minestom.server.event.player.PlayerLoginEvent;
@@ -109,7 +110,11 @@ public class Main {
             Audiences.players().sendPlayerListHeaderAndFooter(header, footer);
         }).repeat(10, TimeUnit.SERVER_TICK).schedule();
 
-        // Pogchamps
+        // Registering events
+        globalEventHandler.addListener(ItemDropEvent.class, (event) -> {
+            event.setCancelled(true);
+        });
+
         globalEventHandler.addListener(PlayerLoginEvent.class, (event) -> {
             final Player player = event.getPlayer();
             player.setGameMode(GameMode.ADVENTURE);
@@ -133,7 +138,6 @@ public class Main {
         //commandManager.register(new ClearCommand());
         commandManager.register(new ProjectCommand());
 
-        RateLimiter.register(globalEventHandler);
 
         // Adding MinestomPVP
         PvpExtension.init();
@@ -144,7 +148,12 @@ public class Main {
         // Starting the server
         final String host = System.getProperty("host", "0.0.0.0");
         final int port = Integer.getInteger("port", 25565);
-        if (Boolean.getBoolean("auth")) MojangAuth.init();
+        final boolean auth = Boolean.getBoolean("auth");
+        if (auth){
+            MojangAuth.init();
+        } else {
+            RateLimiter.register(globalEventHandler);
+        }
 
         minecraftServer.start(host, port);
     }
