@@ -130,6 +130,7 @@ public class Main {
 
         globalEventHandler.addListener(PlayerRespawnEvent.class, (event) -> {
             final Player player = event.getPlayer();
+            player.getInventory().clear();
             player.setRespawnPoint(spawnLocations.get(random.nextInt(spawnLocations.size())));
             KitUtils.applyKit(player);
         });
