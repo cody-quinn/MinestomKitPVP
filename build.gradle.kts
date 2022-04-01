@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.Minestom:Minestom:3674fcc97d")
+    implementation("com.github.Minestom:Minestom:446e4a64b7")
     implementation("com.github.Bloepiloepi:MinestomPvP:144a4ca1c2")
 }
 

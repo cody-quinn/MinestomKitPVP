@@ -133,6 +133,8 @@ public class Main {
         //commandManager.register(new ClearCommand());
         commandManager.register(new ProjectCommand());
 
+        RateLimiter.register(globalEventHandler);
+
         // Adding MinestomPVP
         PvpExtension.init();
         globalEventHandler.addChild(PvpExtension.events());
