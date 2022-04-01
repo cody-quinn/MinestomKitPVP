@@ -9,6 +9,8 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandManager;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
+import net.minestom.server.event.player.PlayerBlockBreakEvent;
+import net.minestom.server.event.player.PlayerBlockPlaceEvent;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.event.player.PlayerRespawnEvent;
 import net.minestom.server.extras.MojangAuth;
@@ -51,6 +53,9 @@ public class Main {
             player.setRespawnPoint(PositionUtils.getRandomPos(instanceContainer));
             KitUtils.applyKit(player);
         });
+
+        globalEventHandler.addListener(PlayerBlockBreakEvent.class, (event) -> event.setCancelled(true));
+        globalEventHandler.addListener(PlayerBlockPlaceEvent.class, (event) -> event.setCancelled(true));
 
         // Registering commands
         commandManager.register(new TeleportCommand());
