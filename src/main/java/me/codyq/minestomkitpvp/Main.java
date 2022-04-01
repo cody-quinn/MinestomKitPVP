@@ -128,6 +128,8 @@ public class Main {
         commandManager.register(new TeleportCommand());
         commandManager.register(new GameModeCommand());
 
+        RateLimiter.register(globalEventHandler);
+
         // Adding MinestomPVP
         PvpExtension.init();
         globalEventHandler.addChild(PvpExtension.events());
