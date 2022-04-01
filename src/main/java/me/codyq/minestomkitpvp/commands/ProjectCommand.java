@@ -45,6 +45,15 @@ public class ProjectCommand extends Command {
                             .clickEvent(ClickEvent.openUrl("https://github.com/CatDevz/MinestomKitPVP"))
                     )
             ));
+        }),
+        MAP((sender, context) -> {
+            sender.sendMessage(Component.join(
+                    JoinConfiguration.separator(Component.newline()),
+                    Component.text("The map was built by GeminiTay on YouTube", NamedTextColor.GREEN),
+                    Component.text("YouTube: ", NamedTextColor.GREEN).append(Component.text("https://www.youtube.com/watch?v=tUeKzdxaP-o", NamedTextColor.DARK_GREEN)
+                            .hoverEvent(HoverEvent.showText(Component.text("Go to https://www.youtube.com/watch?v=tUeKzdxaP-o")))
+                            .clickEvent(ClickEvent.openUrl("https://www.youtube.com/watch?v=tUeKzdxaP-o")))
+            ));
         });
 
         private final CommandExecutor executor;
