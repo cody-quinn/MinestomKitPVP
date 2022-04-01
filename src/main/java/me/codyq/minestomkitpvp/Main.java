@@ -27,6 +27,7 @@ import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.optifine.OptifineSupport;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
+import net.minestom.server.instance.block.Block;
 import net.minestom.server.monitoring.BenchmarkManager;
 import net.minestom.server.monitoring.TickMonitor;
 import net.minestom.server.ping.ResponseData;
@@ -38,6 +39,7 @@ import net.minestom.server.world.DimensionType;
 import net.minestom.server.world.DimensionTypeManager;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.*;
@@ -71,10 +73,12 @@ public class Main {
                 String line = scanner.nextLine();
                 String[] elements = line.split(",");
                 if (elements.length >= 3) {
-                    float x = Float.parseFloat(elements[0]);
-                    float y = Float.parseFloat(elements[1]);
-                    float z = Float.parseFloat(elements[2]);
-                    spawnLocations.add(new Pos(x, y, z));
+                    try {
+                        float x = Float.parseFloat(elements[0]);
+                        float y = Float.parseFloat(elements[1]);
+                        float z = Float.parseFloat(elements[2]);
+                        spawnLocations.add(new Pos(x, y, z));
+                    } catch (Exception ignored) {}
                 }
             }
         } catch (IOException e) {
