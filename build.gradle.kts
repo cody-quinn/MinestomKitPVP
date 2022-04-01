@@ -1,5 +1,6 @@
 plugins {
     java
+    id("com.github.johnrengelman.shadow") version "7.1.0"
 }
 
 group = "me.codyq"
@@ -17,4 +18,21 @@ dependencies {
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
+}
+
+tasks {
+    shadowJar {
+        manifest {
+            attributes (
+                "Main-Class" to "me.codyq.minestomkitpvp.Main",
+                "Multi-Release" to true
+            )
+        }
+
+        archiveBaseName.set(project.name)
+    }
+
+    build {
+        dependsOn(shadowJar)
+    }
 }
