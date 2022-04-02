@@ -163,12 +163,8 @@ public class Main {
         // Starting the server
         final String host = System.getProperty("host", "0.0.0.0");
         final int port = Integer.getInteger("port", 25565);
-        final boolean auth = Boolean.getBoolean("auth");
-        if (auth){
-            MojangAuth.init();
-        } else {
-            RateLimiter.register(globalEventHandler);
-        }
+        if (Boolean.getBoolean("auth")) MojangAuth.init();
+        if (Boolean.getBoolean("throttle")) RateLimiter.register(globalEventHandler);
 
         minecraftServer.start(host, port);
     }
